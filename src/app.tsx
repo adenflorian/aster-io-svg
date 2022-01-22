@@ -1,6 +1,7 @@
 import './style.css';
 import JSX from './custom-render'
 import { NodeRef } from './NodeRef';
+import { vec } from './vector';
 
 /** @jsx afreact.createElement */
 /** @jsxFrag afreact.createFragment */
@@ -71,36 +72,19 @@ const app = (
   </div>
 )
 
-class Vector2 {
-  x;
-  y;
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  rotate(degrees) {
-    // TODO
-    return vec()
-  }
-}
-
-function vec(x = 0, y = 0) {
-  return new Vector2(x, y)
-}
-
-const accel = vec(0, 0.0001)
+const accel = vec(0, 0.001)
 
 class Player {
-  pos = vec()
+  pos = vec(0, 0)
   vel = vec(0, 0)
   angularVel = 0
-  rotation = 33
+  rotation = Math.PI / 3
 
   update() {
-    // this.vel = vec(this.vel.x + accel.x, this.vel.y + accel.y)
-    this.pos = vec(this.pos.x + this.vel.x, this.pos.y + this.vel.y)
+    this.vel = this.vel.add(accel.rotate(-this.rotation))
+    this.pos = this.pos.add(this.vel)
     // this.rotation = Date.now() / 3
-    innerPlayerRef.instance.style.transform = `translate3d(${this.pos.x}px, ${-this.pos.y}px, 0px) rotate3d(0, 0, 1, ${this.rotation}deg) `
+    innerPlayerRef.instance.style.transform = `translate3d(${this.pos.x}px, ${-this.pos.y}px, 0px) rotate3d(0, 0, 1, ${this.rotation}rad) `
   }
 }
 
@@ -111,9 +95,9 @@ function loop() {
   requestAnimationFrame(loop)
 }
 
-// setTimeout(() => {
-//   location.reload();
-// }, 20000)
+setTimeout(() => {
+  location.reload();
+}, 15000)
 
 requestAnimationFrame(loop)
 
