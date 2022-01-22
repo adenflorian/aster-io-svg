@@ -1,5 +1,5 @@
 import './style.css';
-import * as afreact from './custom-render'
+import JSX from './custom-render'
 
 /** @jsx afreact.createElement */
 /** @jsxFrag afreact.createFragment */
@@ -42,7 +42,7 @@ const innerPlayer = (
     {playerSvg}
     {shipThrusterVisual}
   </div>
-)
+) as HTMLDivElement
 
 var playerDiv = (
   <div
@@ -94,7 +94,7 @@ class Player {
   update() {
     this.vel = vec(this.vel.x + accel.x, this.vel.y + accel.y)
     this.pos = vec(this.pos.x + this.vel.x, this.pos.y + this.vel.y)
-    // this.rotation = Date.now() / 30
+    // this.rotation = Date.now() / 3
     innerPlayer.style.transform = `translate3d(${this.pos.x}px, ${-this.pos.y}px, 0px) rotate3d(0, 0, 1, ${this.rotation}deg) `
   }
 }
