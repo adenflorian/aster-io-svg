@@ -1,25 +1,29 @@
 import './style.css';
 import JSX from './custom-render'
+import { NodeRef } from './NodeRef';
 
 /** @jsx afreact.createElement */
 /** @jsxFrag afreact.createFragment */
 
-const shipThrusterVisual = (
-  <svg class="gamer-svg">
-    <path
-      style="transform: translate(50%, 50%) scale(16);"
-      d="M -1 4 L 0 7 L 1 4"
-      stroke='white'
-      fill='none'
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      vector-effect="non-scaling-stroke"
-    />
-  </svg>
+const ShipThrusterVisual = () => (
+  <>
+    <svg class="gamer-svg">
+      <path
+        style="transform: translate(50%, 50%) scale(16);"
+        d="M -1 4 L 0 7 L 1 4"
+        stroke='white'
+        fill='none'
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        vector-effect="non-scaling-stroke"
+      />
+    </svg>
+    hello
+  </>
 )
 
-const playerSvg = (
+const PlayerSvg = () => (
   <svg class="gamer-svg">
     <path
       style="transform: translate(50%, 50%) scale(16);"
@@ -34,13 +38,16 @@ const playerSvg = (
   </svg>
 )
 
-const innerPlayer = (
+const innerPlayerRef = new NodeRef<HTMLDivElement>()
+
+const InnerPlayer = () => (
   <div
     class='player-inner'
-    style="width: 50px; height: 50px; margin-left: -50%; margin-top: -50%; "
+    style="width: 50px; height: 50px; margin-left: -50%; margin-top: -50%;"
+    ref={innerPlayerRef}
   >
-    {playerSvg}
-    {shipThrusterVisual}
+    <PlayerSvg></PlayerSvg>
+    <ShipThrusterVisual />
   </div>
 ) as HTMLDivElement
 
@@ -49,7 +56,7 @@ var playerDiv = (
     class='player-container'
     style="left: 50%; top: 50%; position: absolute; width: 50px; height: 50px;"
   >
-    {innerPlayer}
+    <InnerPlayer />
   </div>
 )
 
@@ -81,8 +88,6 @@ function vec(x = 0, y = 0) {
   return new Vector2(x, y)
 }
 
-console.log(playerDiv)
-
 const accel = vec(0, 0.0001)
 
 class Player {
@@ -92,10 +97,10 @@ class Player {
   rotation = 33
 
   update() {
-    this.vel = vec(this.vel.x + accel.x, this.vel.y + accel.y)
+    // this.vel = vec(this.vel.x + accel.x, this.vel.y + accel.y)
     this.pos = vec(this.pos.x + this.vel.x, this.pos.y + this.vel.y)
     // this.rotation = Date.now() / 3
-    innerPlayer.style.transform = `translate3d(${this.pos.x}px, ${-this.pos.y}px, 0px) rotate3d(0, 0, 1, ${this.rotation}deg) `
+    innerPlayerRef.instance.style.transform = `translate3d(${this.pos.x}px, ${-this.pos.y}px, 0px) rotate3d(0, 0, 1, ${this.rotation}deg) `
   }
 }
 
@@ -106,9 +111,9 @@ function loop() {
   requestAnimationFrame(loop)
 }
 
-setTimeout(() => {
-  location.reload();
-}, 15000)
+// setTimeout(() => {
+//   location.reload();
+// }, 20000)
 
 requestAnimationFrame(loop)
 

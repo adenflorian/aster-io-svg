@@ -6,7 +6,7 @@
   "author": "adenflorian",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack serve --open",
+    "start": "webpack serve",
     "build": "babel src -d lib"
   },
   "devDependencies": {
