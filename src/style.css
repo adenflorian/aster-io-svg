@@ -13,3 +13,7 @@ svg.gamer-svg {
     height: 50px;
      position: absolute;
 }
+
+.hidden {
+  display: none;
+}
