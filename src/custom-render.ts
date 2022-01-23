@@ -11,8 +11,8 @@ export const JSX = {
       if (name.startsWith("on") && name.toLowerCase() in window) {
         element.addEventListener(name.toLowerCase().substr(2), value);
       } else if (name === 'ref') {
-        if (value instanceof NodeRef) {
-          value.instance = element
+        if (value) {
+          (value as any).instance = element
         }
       } else {
         element.setAttribute(name, value.toString());

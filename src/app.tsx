@@ -1,16 +1,18 @@
 import './style.css';
 import JSX from './custom-render'
 import { NodeRef } from './NodeRef';
-import { Keyboard, Keys, vec } from './excalibur/engine';
+import { Keyboard, Keys, vec, Vector } from './excalibur/engine';
 
 /** @jsx afreact.createElement */
 /** @jsxFrag afreact.createFragment */
 
-const thrusterVisualRef = new NodeRef<HTMLDivElement>();
+const playerContainerRef = new NodeRef<HTMLDivElement>();
+
+global.thrusterVisualRef = playerContainerRef
 
 const ShipThrusterVisual = () => (
   <>
-    <svg class="gamer-svg hidden" ref={thrusterVisualRef}>
+    <svg class="gamer-svg thruster">
       <path
         style="transform: translate(50%, 50%) scale(4);"
         d="M -1 4 L 0 7 L 1 4"
@@ -41,13 +43,23 @@ const PlayerSvg = () => (
   </svg>
 )
 
+const shipClonePositions = [
+  vec(-1, -1), vec(0, -1), vec(1, -1),
+  vec(-1, 0), vec(1, 0),
+  vec(-1, 1), vec(0, 1), vec(1, 1),
+]
+
+type CloneRef = NodeRef<HTMLDivElement> & { offset: Vector }
+
+const shipCloneRefs: CloneRef[] = []
+
 const innerPlayerRef = new NodeRef<HTMLDivElement>()
 
-const InnerPlayer = () => (
+const InnerPlayer = ({ ref2 }) => (
   <div
     class='player-inner'
-    style="width: 50px; height: 50px; margin-left: -50%; margin-top: -50%;"
-    ref={innerPlayerRef}
+    style="width: 50px; height: 50px; margin-left: -50%; margin-top: -50%; position: absolute;"
+    ref={ref2}
   >
     <PlayerSvg></PlayerSvg>
     <ShipThrusterVisual />
@@ -58,12 +70,21 @@ var playerDiv = (
   <div
     class='player-container'
     style="left: 50%; top: 50%; position: absolute; width: 50px; height: 50px;"
+    ref={playerContainerRef}
   >
-    <InnerPlayer />
+    <InnerPlayer ref2={innerPlayerRef} />
+    {shipClonePositions.map(x => {
+      const newRef: CloneRef = {
+        offset: x,
+        ...new NodeRef<HTMLDivElement>(),
+      }
+      shipCloneRefs.push(newRef)
+      return (
+        <InnerPlayer ref2={newRef} />
+      )
+    })}
   </div>
 )
-
-global.player = playerDiv
 
 const app = (
   <div
@@ -94,11 +115,11 @@ class Player {
     }
     if (keyboardInput.wasPressed(Keys.W)) {
       console.log('W')
-      thrusterVisualRef.instance.classList.remove('hidden')
+      playerContainerRef.instance.classList.add('thrust')
     }
     if (keyboardInput.wasReleased(Keys.W)) {
       console.log('-W')
-      thrusterVisualRef.instance.classList.add('hidden')
+      playerContainerRef.instance.classList.remove('thrust')
     }
     if (keyboardInput.isHeld(Keys.A)) {
       this.rotation -= (rotateSpeed * delta)
@@ -124,7 +145,12 @@ class Player {
     if (this.pos.x < -window.innerWidth / 2) {
       this.pos.x = window.innerWidth / 2
     }
-    innerPlayerRef.instance.style.transform = `translate3d(${this.pos.x}px, ${-this.pos.y}px, 0px) rotate3d(0, 0, 1, ${this.rotation}rad) `
+
+    innerPlayerRef.instance.style.transform = `translate3d(${this.pos.x}px, ${-this.pos.y}px, 0px) rotate3d(0, 0, 1, ${this.rotation}rad)`
+
+    shipCloneRefs.forEach(x => {
+      x.instance.style.transform = `translate3d(${this.pos.x + ((window.innerWidth) * x.offset.x)}px, ${-this.pos.y + ((window.innerHeight) * x.offset.y)}px, 0px) rotate3d(0, 0, 1, ${this.rotation}rad)`
+    })
   }
 }
 

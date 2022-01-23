@@ -17,3 +17,11 @@ svg.gamer-svg {
 .hidden {
   display: none;
 }
+
+.thruster {
+  display: none;
+}
+
+.thrust .thruster {
+  display: block;
+}
