@@ -22,7 +22,7 @@ const ShipThrusterVisual = () => (
         vector-effect="non-scaling-stroke"
       />
     </svg>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hello
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;help
   </>
 )
 
@@ -109,7 +109,21 @@ class Player {
     if (this.vel.size > maxVel) {
       this.vel.size = maxVel
     }
+
     this.pos = this.pos.add(this.vel)
+
+    if (this.pos.y > window.innerHeight / 2) {
+      this.pos.y = -window.innerHeight / 2
+    }
+    if (this.pos.y < -window.innerHeight / 2) {
+      this.pos.y = window.innerHeight / 2
+    }
+    if (this.pos.x > window.innerWidth / 2) {
+      this.pos.x = -window.innerWidth / 2
+    }
+    if (this.pos.x < -window.innerWidth / 2) {
+      this.pos.x = window.innerWidth / 2
+    }
     innerPlayerRef.instance.style.transform = `translate3d(${this.pos.x}px, ${-this.pos.y}px, 0px) rotate3d(0, 0, 1, ${this.rotation}rad) `
   }
 }
