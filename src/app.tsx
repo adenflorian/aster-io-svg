@@ -10,11 +10,13 @@ const playerContainerRef = new NodeRef<HTMLDivElement>();
 
 global.thrusterVisualRef = playerContainerRef
 
+const shipScale = 4
+
 const ShipThrusterVisual = () => (
   <>
     <svg class="gamer-svg thruster">
       <path
-        style="transform: translate(50%, 50%) scale(4);"
+        style={`transform: translate(50%, 50%) scale(${shipScale});`}
         d="M -1 4 L 0 7 L 1 4"
         stroke='white'
         fill='none'
@@ -31,7 +33,7 @@ const ShipThrusterVisual = () => (
 const PlayerSvg = () => (
   <svg class="gamer-svg">
     <path
-      style="transform: translate(50%, 50%) scale(4);"
+      style={`transform: translate(50%, 50%) scale(${shipScale});`}
       d="M -5 7 L 0 -8 L 5 7 M 4 4 L -4 4"
       stroke='white'
       fill='none'
